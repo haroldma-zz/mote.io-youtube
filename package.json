@@ -1,0 +1,16 @@
+{
+  "author": "Ian Jennings <ian@meetjennings.com> (http://ianjennin.gs)",
+  "name": "mote.io-youtube",
+  "description": "Mote.io Youtube Client",
+  "engines": {
+    "node": "0.8.x"
+  },
+  "dependencies": {
+    "connect": "2.9.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node server.js"
+  },
+  "main":"server.js"
+}

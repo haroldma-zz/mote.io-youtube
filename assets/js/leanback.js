@@ -304,6 +304,7 @@ $(function() {
 });
 
 onYouTubeIframeAPIReady = function() {
+
   app.player = new YT.Player('player', {
     height: '100%',
     width: '100%',
