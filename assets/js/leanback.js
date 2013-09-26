@@ -1,75 +1,27 @@
-/*
 
-/people
-/tv
-/film
-/sports
-/cvg - video games
-/internet
-/m/05p553 - comedy
-/m/05jhg - news
-/m/07c1v - technology
-/m/017rcq - how to
-/m/02jfc - education
-
-*/
 var apiKey = "AIzaSyCkczmIB0LJZeoXjwYvVNHlD4asew7zBb4",
 	perPage = 2,
+	cutoff = new Date(new Date().setDate(new Date().getDate()-20));
+	player = null,
+	activeCategory = 0,
+	hasShownOverlay = false,
+	playlist = [],
+	slideTimeout = null;
 	requests = [
 	{
 		name: 'Trending',
 		ajax: {
-	    url: 'https://www.googleapis.com/youtube/v3/search',
+	    url: 'https://gdata.youtube.com/feeds/api/users/trends/favorites',
 	    data: {
-	      part: 'snippet',
-	      order: 'rating',
-	      safeSearch: 'none',
-	      type: 'video',
-	      videoDimension: '2d',
-	      videoEmbeddable: true,
-	      videoSyndicated: true,
-	      maxResults: perPage,
-	      key: apiKey
+	      key: apiKey,
+	      alt: 'json',
+	      'max-results': perPage
 	    }
-	  }
-	},
-	{
-		name: 'Most Popular',
-		ajax: {
-	    url: 'https://www.googleapis.com/youtube/v3/videos',
-	    data: {
-	      part: 'snippet',
-	      chart: 'mostPopular',
-	      maxResults: perPage,
-	      key: apiKey
-	    }
-	  }
-	},
-	{
-		name: 'Music',
-		ajax: {
-	    url: 'https://www.googleapis.com/youtube/v3/search',
-	    data: {
-	      part: 'snippet',
-	      order: 'rating',
-	      safeSearch: 'none',
-	      type: 'video',
-	      videoDimension: '2d',
-	      videoEmbeddable: true,
-	      videoSyndicated: true,
-	      topId: '/music',
-	      maxResults: perPage,
-	      key: apiKey
-	    }
-	  }
-	},
+	  },
+	  results: []
+	}
 ];
 
-var player = null,
-	activeCategory = 1,
-	hasShownOverlay = false,
-	playlist = [],
-	slideTimeout = null;
 
 $(function() {
 
@@ -85,10 +37,12 @@ $(function() {
 
 function showInfo() {
 
-	var videoData = requests[1].results.items[player.getPlaylistIndex()].snippet;
+	var videoData = requests[activeCategory].results[player.getPlaylistIndex()];
 
-	$('#video-title').text(videoData.title);
-	$('#video-text').text(videoData.description);
+	console.log(videoData)
+
+	$('#video-title').text(videoData.title['$t']);
+	$('#video-text').text(videoData.content['$t']);
 
 	$('#info-overlay').stop().animate({
 		left: '0'
@@ -133,26 +87,37 @@ function onYouTubeIframeAPIReady() {
   });
 }
 
+function getUrl(url) {
+	var videoid = url.match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/);
+	return videoid[1];
+}
+
 function loadActiveRequest() {
 
-	console.log('load active')
-
 	playlist = [];
+
+	console.log('getting videos for ' + requests[activeCategory].name)
 
 	$.ajax(requests[activeCategory].ajax)
   .done(function(data) {
 
-  	requests[activeCategory].results = data;
-  	requests[activeCategory].ajax.data.pageToken = data.nextPageToken;
-
-  	for(var i = 0; i < data.items.length; i++) {
-	  	playlist.push(data.items[i].id);
+  	if(typeof requests[activeCategory].ajax.data['start-index'] == "undefined") {
+  		requests[activeCategory].ajax.data['start-index'] = perPage + 1;
+  	} else {
+			requests[activeCategory].ajax.data['start-index'] = requests[activeCategory].ajax.data['start-index'] + perPage;
   	}
 
-  	console.log(playlist)
+  	requests[activeCategory].results = [];
+  	for(var i = 0; i < data.feed.entry.length; i++) {
+
+  		playlist.push(getUrl(data.feed.entry[i]['media$group']['media$player'][0].url));
+			requests[activeCategory].results.push(data.feed.entry[i]);
+
+  	}
 
   	player.loadPlaylist({playlist: playlist});
   	player.mute();
+
 
   });
 
@@ -170,7 +135,6 @@ function onPlayerStateChange(event) {
   	event.data == 3 ||
   	event.data == 5
   	) {
-  	console.log('not playing')
   	showStatic();
   }
 
@@ -193,4 +157,9 @@ function nextVideo() {
 
 function previousVideo() {
 	player.previousVideo();
+}
+
+function changeCategory(a) {
+	activeCategory = a;
+	loadActiveRequest();
 }
