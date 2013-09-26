@@ -19,9 +19,161 @@ var apiKey = "AIzaSyCkczmIB0LJZeoXjwYvVNHlD4asew7zBb4",
 	    }
 	  },
 	  results: []
+	},
+	{
+		name: 'Music',
+		ajax: {
+	    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_Music',
+	    data: {
+	      key: apiKey,
+	      alt: 'json',
+	      time: 'today',
+	      'max-results': perPage
+	    }
+	  },
+	  results: []
+	},
+	{
+		name: 'Gaming',
+		ajax: {
+	    url: 'https://gdata.youtube.com/feeds/api/users/YTOTVgaming/favorites',
+	    data: {
+	      key: apiKey,
+	      alt: 'json',
+	      'max-results': perPage
+	    }
+	  },
+	  results: []
+	},
+	{
+		name: 'Sports',
+		ajax: {
+	    url: 'https://gdata.youtube.com/feeds/api/users/YTOTVsports/favorites',
+	    data: {
+	      key: apiKey,
+	      alt: 'json',
+	      'max-results': perPage
+	    }
+	  },
+	  results: []
+	},
+	{
+		name: 'Film & Animation',
+		ajax: {
+	    url: 'https://gdata.youtube.com/feeds/api/users/YTOTVfilm/favorites',
+	    data: {
+	      key: apiKey,
+	      alt: 'json',
+	      'max-results': perPage
+	    }
+	  },
+	  results: []
+	},
+	{
+		name: 'Entertainment',
+		ajax: {
+	    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_Entertainment',
+	    data: {
+	      key: apiKey,
+	      alt: 'json',
+	      time: 'today',
+	      'max-results': perPage
+	    }
+	  },
+	  results: []
+	},
+	{
+		name: 'News & Politics',
+		ajax: {
+	    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_News',
+	    data: {
+	      key: apiKey,
+	      alt: 'json',
+	      time: 'today',
+	      'max-results': perPage
+	    }
+	  },
+	  results: []
+	},
+	{
+		name: 'People & Blogs',
+		ajax: {
+	    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_People',
+	    data: {
+	      key: apiKey,
+	      alt: 'json',
+	      time: 'today',
+	      'max-results': perPage
+	    }
+	  },
+	  results: []
+	},
+	{
+		name: 'Scient & Technology',
+		ajax: {
+	    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_Tech',
+	    data: {
+	      key: apiKey,
+	      alt: 'json',
+	      time: 'today',
+	      'max-results': perPage
+	    }
+	  },
+	  results: []
+	},
+	{
+		name: 'Howto & Style',
+		ajax: {
+	    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_Howto',
+	    data: {
+	      key: apiKey,
+	      alt: 'json',
+	      time: 'today',
+	      'max-results': perPage
+	    }
+	  },
+	  results: []
+	},
+	{
+		name: 'Education',
+		ajax: {
+	    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_Education',
+	    data: {
+	      key: apiKey,
+	      alt: 'json',
+	      time: 'today',
+	      'max-results': perPage
+	    }
+	  },
+	  results: []
+	},
+	{
+		name: 'Pets & Animals',
+		ajax: {
+	    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_Animals',
+	    data: {
+	      key: apiKey,
+	      alt: 'json',
+	      time: 'today',
+	      'max-results': perPage
+	    }
+	  },
+	  results: []
+	},
+	{
+		name: 'Most Popular',
+		ajax: {
+	    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular',
+	    data: {
+	      key: apiKey,
+	      alt: 'json',
+	      time: 'today',
+	      'max-results': perPage
+	    }
+	  },
+	  results: []
 	}
 ];
-
 
 $(function() {
 
@@ -41,8 +193,8 @@ function showInfo() {
 
 	console.log(videoData)
 
-	$('#video-title').text(videoData.title['$t']);
-	$('#video-text').text(videoData.content['$t']);
+	$('#video-title').text(videoData['media$group']['media$title']['$t']);
+	$('#video-text').text(videoData['media$group']['media$description']['$t']);
 
 	$('#info-overlay').stop().animate({
 		left: '0'
