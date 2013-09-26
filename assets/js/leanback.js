@@ -111,7 +111,7 @@ leanback = function() {
 		  results: []
 		},
 		{
-			name: 'Scient & Technology',
+			name: 'Science & Technology',
 			icon: 'beaker',
 			ajax: {
 		    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_Tech',
@@ -280,6 +280,7 @@ leanback = function() {
 
 	self.changeCategory= function(a) {
 		self.activeCategory = a;
+		delete self.requests[self.activeCategory].ajax.data['start-index'];
 		self.loadActiveRequest();
 	}
 
