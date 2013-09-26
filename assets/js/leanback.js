@@ -174,6 +174,18 @@ leanback = function() {
 		    }
 		  },
 		  results: []
+		},
+		{
+			name: 'Search',
+			icon: 'search',
+			ajax: {
+		    url: 'https://gdata.youtube.com/feeds/api/videos',
+		    data: {
+		      alt: 'json',
+		      orderby: 'relevance'
+		    }
+		  },
+		  results: []
 		}
 	];
 
@@ -280,6 +292,14 @@ leanback = function() {
 
 	self.changeCategory= function(a) {
 		self.activeCategory = a;
+		delete self.requests[self.activeCategory].ajax.data['start-index'];
+		self.loadActiveRequest();
+	}
+
+	self.search = function(q) {
+		self.activeCategory = 13;
+		self.requests[self.activeCategory].ajax.data.q = q;
+		self.requests[self.activeCategory].name = "Search results for " + q;
 		delete self.requests[self.activeCategory].ajax.data['start-index'];
 		self.loadActiveRequest();
 	}
