@@ -1,242 +1,310 @@
+leanback = function() {
 
-var apiKey = "AIzaSyCkczmIB0LJZeoXjwYvVNHlD4asew7zBb4",
-	perPage = 10,
-	cutoff = new Date(new Date().setDate(new Date().getDate()-20));
-	player = null,
-	activeCategory = 0,
-	hasShownOverlay = false,
-	playlist = [],
-	slideTimeout = null;
-	requests = [
-	{
-		name: 'Trending',
-		icon: 'signal',
-		ajax: {
-	    url: 'https://gdata.youtube.com/feeds/api/users/trends/favorites',
-	    data: {
-	      key: apiKey,
-	      alt: 'json',
-	      'max-results': perPage
-	    }
-	  },
-	  results: []
-	},
-	{
-		name: 'Music',
-		icon: 'headphones',
-		ajax: {
-	    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_Music',
-	    data: {
-	      key: apiKey,
-	      alt: 'json',
-	      time: 'today',
-	      'max-results': perPage
-	    }
-	  },
-	  results: []
-	},
-	{
-		name: 'Gaming',
-		icon: 'gamepad',
-		ajax: {
-	    url: 'https://gdata.youtube.com/feeds/api/users/YTOTVgaming/favorites',
-	    data: {
-	      key: apiKey,
-	      alt: 'json',
-	      'max-results': perPage
-	    }
-	  },
-	  results: []
-	},
-	{
-		name: 'Sports',
-		icon: 'dribbble',
-		ajax: {
-	    url: 'https://gdata.youtube.com/feeds/api/users/YTOTVsports/favorites',
-	    data: {
-	      key: apiKey,
-	      alt: 'json',
-	      'max-results': perPage
-	    }
-	  },
-	  results: []
-	},
-	{
-		name: 'Film & Animation',
-		icon: 'film',
-		ajax: {
-	    url: 'https://gdata.youtube.com/feeds/api/users/YTOTVfilm/favorites',
-	    data: {
-	      key: apiKey,
-	      alt: 'json',
-	      'max-results': perPage
-	    }
-	  },
-	  results: []
-	},
-	{
-		name: 'Entertainment',
-		icon: 'youtube-play',
-		ajax: {
-	    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_Entertainment',
-	    data: {
-	      key: apiKey,
-	      alt: 'json',
-	      time: 'today',
-	      'max-results': perPage
-	    }
-	  },
-	  results: []
-	},
-	{
-		name: 'News & Politics',
-		icon: 'list-alt',
-		ajax: {
-	    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_News',
-	    data: {
-	      key: apiKey,
-	      alt: 'json',
-	      time: 'today',
-	      'max-results': perPage
-	    }
-	  },
-	  results: []
-	},
-	{
-		name: 'People & Blogs',
-		icon: 'group',
-		ajax: {
-	    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_People',
-	    data: {
-	      key: apiKey,
-	      alt: 'json',
-	      time: 'today',
-	      'max-results': perPage
-	    }
-	  },
-	  results: []
-	},
-	{
-		name: 'Scient & Technology',
-		icon: 'beaker',
-		ajax: {
-	    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_Tech',
-	    data: {
-	      key: apiKey,
-	      alt: 'json',
-	      time: 'today',
-	      'max-results': perPage
-	    }
-	  },
-	  results: []
-	},
-	{
-		name: 'Howto & Style',
-		icon: 'question-sign',
-		ajax: {
-	    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_Howto',
-	    data: {
-	      key: apiKey,
-	      alt: 'json',
-	      time: 'today',
-	      'max-results': perPage
-	    }
-	  },
-	  results: []
-	},
-	{
-		name: 'Education',
-		icon: 'book',
-		ajax: {
-	    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_Education',
-	    data: {
-	      key: apiKey,
-	      alt: 'json',
-	      time: 'today',
-	      'max-results': perPage
-	    }
-	  },
-	  results: []
-	},
-	{
-		name: 'Pets & Animals',
-		icon: 'linux',
-		ajax: {
-	    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_Animals',
-	    data: {
-	      key: apiKey,
-	      alt: 'json',
-	      time: 'today',
-	      'max-results': perPage
-	    }
-	  },
-	  results: []
-	},
-	{
-		name: 'Most Popular',
-		icon: 'star',
-		ajax: {
-	    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular',
-	    data: {
-	      key: apiKey,
-	      alt: 'json',
-	      time: 'today',
-	      'max-results': perPage
-	    }
-	  },
-	  results: []
+	var self = this;
+
+	self.perPage = 25;
+	self.cutoff = new Date(new Date().setDate(new Date().getDate()-20));
+	self.player = null;
+	self.activeCategory = 0;
+	self.hasShownOverlay = false;
+	self.playlist = [];
+	self.slideTimeout = null;
+	self.requests = [
+		{
+			name: 'Trending',
+			icon: 'signal',
+			ajax: {
+		    url: 'https://gdata.youtube.com/feeds/api/users/trends/favorites',
+		    data: {
+		      alt: 'json',
+		      'max-results': self.perPage
+		    }
+		  },
+		  results: []
+		},
+		{
+			name: 'Music',
+			icon: 'headphones',
+			ajax: {
+		    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_Music',
+		    data: {
+		      alt: 'json',
+		      time: 'today',
+		      'max-results': self.perPage
+		    }
+		  },
+		  results: []
+		},
+		{
+			name: 'Gaming',
+			icon: 'gamepad',
+			ajax: {
+		    url: 'https://gdata.youtube.com/feeds/api/users/YTOTVgaming/favorites',
+		    data: {
+		      alt: 'json',
+		      'max-results': self.perPage
+		    }
+		  },
+		  results: []
+		},
+		{
+			name: 'Sports',
+			icon: 'dribbble',
+			ajax: {
+		    url: 'https://gdata.youtube.com/feeds/api/users/YTOTVsports/favorites',
+		    data: {
+		      alt: 'json',
+		      'max-results': self.perPage
+		    }
+		  },
+		  results: []
+		},
+		{
+			name: 'Film & Animation',
+			icon: 'film',
+			ajax: {
+		    url: 'https://gdata.youtube.com/feeds/api/users/YTOTVfilm/favorites',
+		    data: {
+		      alt: 'json',
+		      'max-results': self.perPage
+		    }
+		  },
+		  results: []
+		},
+		{
+			name: 'Entertainment',
+			icon: 'youtube-play',
+			ajax: {
+		    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_Entertainment',
+		    data: {
+		      alt: 'json',
+		      time: 'today',
+		      'max-results': self.perPage
+		    }
+		  },
+		  results: []
+		},
+		{
+			name: 'News & Politics',
+			icon: 'list-alt',
+			ajax: {
+		    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_News',
+		    data: {
+		      alt: 'json',
+		      time: 'today',
+		      'max-results': self.perPage
+		    }
+		  },
+		  results: []
+		},
+		{
+			name: 'People & Blogs',
+			icon: 'group',
+			ajax: {
+		    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_People',
+		    data: {
+		      alt: 'json',
+		      time: 'today',
+		      'max-results': self.perPage
+		    }
+		  },
+		  results: []
+		},
+		{
+			name: 'Scient & Technology',
+			icon: 'beaker',
+			ajax: {
+		    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_Tech',
+		    data: {
+		      alt: 'json',
+		      time: 'today',
+		      'max-results': self.perPage
+		    }
+		  },
+		  results: []
+		},
+		{
+			name: 'Howto & Style',
+			icon: 'question-sign',
+			ajax: {
+		    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_Howto',
+		    data: {
+		      alt: 'json',
+		      time: 'today',
+		      'max-results': self.perPage
+		    }
+		  },
+		  results: []
+		},
+		{
+			name: 'Education',
+			icon: 'book',
+			ajax: {
+		    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_Education',
+		    data: {
+		      alt: 'json',
+		      time: 'today',
+		      'max-results': self.perPage
+		    }
+		  },
+		  results: []
+		},
+		{
+			name: 'Pets & Animals',
+			icon: 'linux',
+			ajax: {
+		    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_Animals',
+		    data: {
+		      alt: 'json',
+		      time: 'today',
+		      'max-results': self.perPage
+		    }
+		  },
+		  results: []
+		},
+		{
+			name: 'Most Popular',
+			icon: 'star',
+			ajax: {
+		    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular',
+		    data: {
+		      alt: 'json',
+		      time: 'today',
+		      'max-results': self.perPage
+		    }
+		  },
+		  results: []
+		}
+	];
+
+	self.showInfo = function() {
+
+		var videoData = self.requests[self.activeCategory].results[self.player.getPlaylistIndex()];
+
+		$('#video-category').html('<span class="icon-' + self.requests[self.activeCategory].icon + '"></span> ' + self.requests[self.activeCategory].name);
+		$('#video-title').text(videoData['media$group']['media$title']['$t']);
+		$('#video-text').text(videoData['media$group']['media$description']['$t']);
+
+		$('#info-overlay').stop().animate({
+			left: '0'
+		}, 500);
+
+		clearTimeout(app.slideTimeout);
+		self.slideTimeout = setTimeout(function(){
+			app.hideInfo();
+		}, 5000);
+
 	}
-];
+
+	self.hideInfo = function() {
+		$('#info-overlay').stop().animate({
+			left: '-80%'
+		}, 500);
+	}
+
+	self.showStatic = function() {
+		$('#static').show();
+	}
+
+	self.hideStatic = function() {
+		$('#static').hide();
+	}
+
+	self.getUrl = function(url) {
+		var videoid = url.match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/);
+		return videoid[1];
+	}
+
+	self.loadActiveRequest = function() {
+
+		self.playlist = [];
+
+		$.ajax(self.requests[self.activeCategory].ajax)
+	  .done(function(data) {
+
+	  	if(typeof self.requests[self.activeCategory].ajax.data['start-index'] == "undefined") {
+	  		self.requests[self.activeCategory].ajax.data['start-index'] = self.perPage + 1;
+	  	} else {
+				self.requests[self.activeCategory].ajax.data['start-index'] = self.requests[self.activeCategory].ajax.data['start-index'] + self.perPage;
+	  	}
+
+	  	self.requests[self.activeCategory].results = [];
+	  	for(var i = 0; i < data.feed.entry.length; i++) {
+
+	  		self.playlist.push(self.getUrl(data.feed.entry[i]['media$group']['media$player'][0].url));
+				self.requests[self.activeCategory].results.push(data.feed.entry[i]);
+
+	  	}
+
+	  	self.player.loadPlaylist({playlist: self.playlist});
+
+	  });
+
+	}
+
+	self.onPlayerStateChange = function(event) {
+
+	  if (event.data == 1) {
+	  	self.hideStatic();
+	  	self.showInfo();
+	  }
+
+	  if (event.data == -1 ||
+	  	event.data == 0 ||
+	  	event.data == 3 ||
+	  	event.data == 5
+	  	) {
+	  	self.showStatic();
+	  }
+
+	  if (event.data == 0) {
+	  	self.loadNextPageIfLast();
+	  }
+
+	}
+
+	self.loadNextPageIfLast = function() {
+		if(self.player.getPlaylistIndex() == (self.perPage - 1)) {
+			self.loadActiveRequest();
+		}
+	}
+
+	self.nextVideo = function() {
+		self.loadNextPageIfLast();
+		self.player.nextVideo();
+	}
+
+	self.previousVideo = function() {
+		self.player.previousVideo();
+	}
+
+	self.changeCategory= function(a) {
+		self.activeCategory = a;
+		self.loadActiveRequest();
+	}
+
+	self.init = function() {
+		self.showStatic();
+	}
+
+}
+
+var app = null;
 
 $(function() {
 
-	showStatic();
-
-	var tag = document.createElement('script');
+	var tag = document.createElement('script'),
+		firstScriptTag = document.getElementsByTagName('script')[0];
 
 	tag.src = "https://www.youtube.com/iframe_api";
-	var firstScriptTag = document.getElementsByTagName('script')[0];
 	firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+	app = new leanback();
 
 });
 
-function showInfo() {
-
-	var videoData = requests[activeCategory].results[player.getPlaylistIndex()];
-
-	console.log(videoData)
-
-	$('#video-category').html('<span class="icon-' + requests[activeCategory].icon + '"></span> ' + requests[activeCategory].name);
-	$('#video-title').text(videoData['media$group']['media$title']['$t']);
-	$('#video-text').text(videoData['media$group']['media$description']['$t']);
-
-	$('#info-overlay').stop().animate({
-		left: '0'
-	}, 500);
-
-	clearTimeout(slideTimeout);
-	slideTimeout = setTimeout(function(){
-		hideInfo();
-	}, 5000);
-
-}
-
-function hideInfo() {
-	$('#info-overlay').stop().animate({
-		left: '-80%'
-	}, 500);
-}
-
-function showStatic() {
-	$('#static').show();
-}
-
-function hideStatic() {
-	$('#static').hide();
-}
-
-function onYouTubeIframeAPIReady() {
-  player = new YT.Player('player', {
+onYouTubeIframeAPIReady = function() {
+  app.player = new YT.Player('player', {
     height: '100%',
     width: '100%',
     playerVars: {
@@ -247,83 +315,15 @@ function onYouTubeIframeAPIReady() {
     	modestbranding: 1
     },
     events: {
-      'onReady': loadActiveRequest,
-      'onStateChange': onPlayerStateChange
+      'onReady': function(){
+      	app.loadActiveRequest();
+      },
+      'onStateChange': function(e) {
+      	app.onPlayerStateChange(e);
+      }
     }
   });
-}
 
-function getUrl(url) {
-	var videoid = url.match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/);
-	return videoid[1];
-}
+	app.init();
 
-function loadActiveRequest() {
-
-	playlist = [];
-
-	$.ajax(requests[activeCategory].ajax)
-  .done(function(data) {
-
-  	if(typeof requests[activeCategory].ajax.data['start-index'] == "undefined") {
-  		requests[activeCategory].ajax.data['start-index'] = perPage + 1;
-  	} else {
-			requests[activeCategory].ajax.data['start-index'] = requests[activeCategory].ajax.data['start-index'] + perPage;
-  	}
-
-  	requests[activeCategory].results = [];
-  	for(var i = 0; i < data.feed.entry.length; i++) {
-
-  		playlist.push(getUrl(data.feed.entry[i]['media$group']['media$player'][0].url));
-			requests[activeCategory].results.push(data.feed.entry[i]);
-
-  	}
-
-  	player.loadPlaylist({playlist: playlist});
-  	player.mute();
-
-
-  });
-
-}
-
-function onPlayerStateChange(event) {
-
-  if (event.data == 1) {
-  	hideStatic();
-  	showInfo();
-  }
-
-  if (event.data == -1 ||
-  	event.data == 0 ||
-  	event.data == 3 ||
-  	event.data == 5
-  	) {
-  	showStatic();
-  }
-
-  if (event.data == 0) {
-  	loadNextPageIfLast();
-  }
-
-}
-
-function loadNextPageIfLast() {
-	if(player.getPlaylistIndex() == (perPage - 1)) {
-		loadActiveRequest();
-	}
-}
-
-function nextVideo() {
-	loadNextPageIfLast();
-	player.nextVideo();
-}
-
-function previousVideo() {
-	player.previousVideo();
-}
-
-function changeCategory(a) {
-	activeCategory = a;
-	loadActiveRequest();
 }
