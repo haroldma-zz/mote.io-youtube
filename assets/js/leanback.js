@@ -1,6 +1,6 @@
 
 var apiKey = "AIzaSyCkczmIB0LJZeoXjwYvVNHlD4asew7zBb4",
-	perPage = 2,
+	perPage = 10,
 	cutoff = new Date(new Date().setDate(new Date().getDate()-20));
 	player = null,
 	activeCategory = 0,
@@ -10,6 +10,7 @@ var apiKey = "AIzaSyCkczmIB0LJZeoXjwYvVNHlD4asew7zBb4",
 	requests = [
 	{
 		name: 'Trending',
+		icon: 'signal',
 		ajax: {
 	    url: 'https://gdata.youtube.com/feeds/api/users/trends/favorites',
 	    data: {
@@ -22,6 +23,7 @@ var apiKey = "AIzaSyCkczmIB0LJZeoXjwYvVNHlD4asew7zBb4",
 	},
 	{
 		name: 'Music',
+		icon: 'headphones',
 		ajax: {
 	    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_Music',
 	    data: {
@@ -35,6 +37,7 @@ var apiKey = "AIzaSyCkczmIB0LJZeoXjwYvVNHlD4asew7zBb4",
 	},
 	{
 		name: 'Gaming',
+		icon: 'gamepad',
 		ajax: {
 	    url: 'https://gdata.youtube.com/feeds/api/users/YTOTVgaming/favorites',
 	    data: {
@@ -47,6 +50,7 @@ var apiKey = "AIzaSyCkczmIB0LJZeoXjwYvVNHlD4asew7zBb4",
 	},
 	{
 		name: 'Sports',
+		icon: 'dribbble',
 		ajax: {
 	    url: 'https://gdata.youtube.com/feeds/api/users/YTOTVsports/favorites',
 	    data: {
@@ -59,6 +63,7 @@ var apiKey = "AIzaSyCkczmIB0LJZeoXjwYvVNHlD4asew7zBb4",
 	},
 	{
 		name: 'Film & Animation',
+		icon: 'film',
 		ajax: {
 	    url: 'https://gdata.youtube.com/feeds/api/users/YTOTVfilm/favorites',
 	    data: {
@@ -71,6 +76,7 @@ var apiKey = "AIzaSyCkczmIB0LJZeoXjwYvVNHlD4asew7zBb4",
 	},
 	{
 		name: 'Entertainment',
+		icon: 'youtube-play',
 		ajax: {
 	    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_Entertainment',
 	    data: {
@@ -84,6 +90,7 @@ var apiKey = "AIzaSyCkczmIB0LJZeoXjwYvVNHlD4asew7zBb4",
 	},
 	{
 		name: 'News & Politics',
+		icon: 'list-alt',
 		ajax: {
 	    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_News',
 	    data: {
@@ -97,6 +104,7 @@ var apiKey = "AIzaSyCkczmIB0LJZeoXjwYvVNHlD4asew7zBb4",
 	},
 	{
 		name: 'People & Blogs',
+		icon: 'group',
 		ajax: {
 	    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_People',
 	    data: {
@@ -110,6 +118,7 @@ var apiKey = "AIzaSyCkczmIB0LJZeoXjwYvVNHlD4asew7zBb4",
 	},
 	{
 		name: 'Scient & Technology',
+		icon: 'beaker',
 		ajax: {
 	    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_Tech',
 	    data: {
@@ -123,6 +132,7 @@ var apiKey = "AIzaSyCkczmIB0LJZeoXjwYvVNHlD4asew7zBb4",
 	},
 	{
 		name: 'Howto & Style',
+		icon: 'question-sign',
 		ajax: {
 	    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_Howto',
 	    data: {
@@ -136,6 +146,7 @@ var apiKey = "AIzaSyCkczmIB0LJZeoXjwYvVNHlD4asew7zBb4",
 	},
 	{
 		name: 'Education',
+		icon: 'book',
 		ajax: {
 	    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_Education',
 	    data: {
@@ -149,6 +160,7 @@ var apiKey = "AIzaSyCkczmIB0LJZeoXjwYvVNHlD4asew7zBb4",
 	},
 	{
 		name: 'Pets & Animals',
+		icon: 'linux',
 		ajax: {
 	    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular_Animals',
 	    data: {
@@ -162,6 +174,7 @@ var apiKey = "AIzaSyCkczmIB0LJZeoXjwYvVNHlD4asew7zBb4",
 	},
 	{
 		name: 'Most Popular',
+		icon: 'star',
 		ajax: {
 	    url: 'https://gdata.youtube.com/feeds/api/standardfeeds/most_popular',
 	    data: {
@@ -193,6 +206,7 @@ function showInfo() {
 
 	console.log(videoData)
 
+	$('#video-category').html('<span class="icon-' + requests[activeCategory].icon + '"></span> ' + requests[activeCategory].name);
 	$('#video-title').text(videoData['media$group']['media$title']['$t']);
 	$('#video-text').text(videoData['media$group']['media$description']['$t']);
 
@@ -247,8 +261,6 @@ function getUrl(url) {
 function loadActiveRequest() {
 
 	playlist = [];
-
-	console.log('getting videos for ' + requests[activeCategory].name)
 
 	$.ajax(requests[activeCategory].ajax)
   .done(function(data) {

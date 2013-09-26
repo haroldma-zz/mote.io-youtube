@@ -18,22 +18,30 @@ html, body {
   top: 3%;
   left: -80%; }
 
-#video-title, #video-text {
+#video-title, #video-text, #video-category {
   color: white;
   background-color: black;
-  display: block;
   padding: 2%;
-  padding-left: 8%; }
+  padding-left: 8%;
+  display: inline-block;
+  float: left;
+  clear: both; }
+
+#video-category {
+  text-transform: uppercase;
+  font-size: 25px;
+  margin-bottom: 2%; }
 
 #video-title {
   text-transform: uppercase;
   font-size: 50px;
   margin-bottom: 2%;
-  font-weight: 600; }
+  font-weight: 600;
+  width: 80%; }
 
 #video-text {
-  font-size: 28px;
-  width: 85%;
+  font-size: 20px;
+  max-width: 100%;
   color: #aaaaaa; }
 
 #static {
