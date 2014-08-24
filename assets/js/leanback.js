@@ -243,8 +243,12 @@ leanback = function() {
 	  	self.requests[self.activeCategory].results = [];
 	  	for(var i = 0; i < data.feed.entry.length; i++) {
 
-	  		self.playlist.push(self.getUrl(data.feed.entry[i]['media$group']['media$player'][0].url));
-				self.requests[self.activeCategory].results.push(data.feed.entry[i]);
+	  		var raw_url = data.feed.entry[i]['media$group']['media$player'];
+
+	  		if(typeof raw_url !== "undefined") {
+		  		self.playlist.push(self.getUrl(raw_url[0].url));
+					self.requests[self.activeCategory].results.push(data.feed.entry[i]);
+	  		}
 
 	  	}
 
